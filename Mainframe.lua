@@ -46,5 +46,24 @@ local module = {}
 		return status;
 	end;
 	
+	module.CommentUser = function(userId, String)
+		local remote = game.ReplicatedStorage.DataStore;
+		remote:FireServer({userId, "Comment", String});
+	end;
+	
+	module.LoadComments = function(userId)
+		local remote = game.ReplicatedStorage.DataStore;
+		local loaded, comments = false, nil;
+		remote:FireServer({userId, "LoadComments"})
+		remote.OnClientEvent:connect(function(var)
+			loaded = true;
+			comments = var;
+		end);	
+		
+		repeat wait(0.3) until loaded;	
+		
+		
+		return comments;		
+	end;
 	
 return module
